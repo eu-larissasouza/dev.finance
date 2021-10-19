@@ -4,6 +4,7 @@ const Modal = {
         //Adiciona a class active ao modal
         document.querySelector('.modal-overlay').classList.add('active')
     },
+
     close() {
         //Fecha o modal
         //Remover a class active ao modal
@@ -42,22 +43,22 @@ const Transaction = {
     incomes() {
         //Somar as entradas
         let income = 0
-
         Transaction.all.forEach(transaction => {
-            if (transaction.amount > 0) income += transaction.amount
+            if (transaction.amount > 0) {
+                income += transaction.amount
+            }
         })
-
         return income
     },
 
     expenses() {
         //Somar as saídas
         let expense = 0
-
         Transaction.all.forEach(transaction => {
-            if (transaction.amount < 0) expense += transaction.amount
+            if (transaction.amount < 0) {
+                expense += transaction.amount
+            }
         })
-
         return expense
     },
 
@@ -84,14 +85,13 @@ const DOM = {
         const amount = Utils.formatCurrency(transaction.amount)
 
         const html = `
-          <tr>
-          <td class="description">${transaction.description}</td>
-          <td class="${CSSclass}">${amount}</td>
-          <td class="date">${transaction.date}</td>
-          <td>
-              <img onclick="Transaction.remove(${index})" src="./assets/minus.svg" alt="Remover transação" />
-          </td>
-          </tr>`
+        <td class="description">${transaction.description}</td>
+        <td class="${CSSclass}">${amount}</td>
+        <td class="date">${transaction.date}</td>
+        <td>
+            <img onclick="Transaction.remove(${index})" src="./assets/minus.svg" alt="Remover transação">
+        </td>
+        `
 
         return html
     },
@@ -114,6 +114,18 @@ const DOM = {
 }
 
 const Utils = {
+    formatAmount(value) {
+        value = value * 100
+
+        return Math.round(value)
+    },
+
+    formatDate(date) {
+        const splittedDate = date.split('-').reverse().join('/')
+
+        return splittedDate
+    },
+
     formatCurrency(value) {
         const signal = Number(value) < 0 ? '-' : ''
 
@@ -127,18 +139,6 @@ const Utils = {
         })
 
         return signal + value
-    },
-
-    formatAmount(value) {
-        value = Number(value) * 100
-
-        return value
-    },
-
-    formatDate(date) {
-        const splittedDate = date.split('-').reverse().join('/')
-
-        return splittedDate
     }
 }
 
@@ -200,7 +200,7 @@ const Form = {
         try {
             Form.validateFields()
             const transaction = Form.formatValues()
-            Form.saveTransaction(transaction)
+            Transaction.add(transaction)
             Form.clearFields()
             Modal.close()
         } catch (error) {
